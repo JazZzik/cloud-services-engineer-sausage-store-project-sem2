@@ -30,21 +30,23 @@ spec:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image }}
           imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Release.Name }}-{{ .Chart.Name }}-conf
+                  key: PORT
+            - name: DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-{{ .Chart.Name }}-secret
+                  key: DB
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           ports:
-            - name: http
+            - name: {{ .Chart.Name }}
               containerPort: {{ .Values.containerPort }}
           livenessProbe:
 {{ toYaml .Values.livenessProbe | indent 12 }}
           readinessProbe:
 {{ toYaml .Values.readinessProbe | indent 12 }}
-          volumeMounts:
-            - name: nginx-conf
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
-              readOnly: true
-      volumes:
-        - name: nginx-conf
-          configMap:
-            name: {{ .Release.Name }}-{{ .Chart.Name }}-conf
