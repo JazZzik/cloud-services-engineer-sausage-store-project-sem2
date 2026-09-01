@@ -25,10 +25,11 @@ spec:
         - containerPort: {{ .Values.mongodb.containerPort }}
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "50m"
+            memory: {{ .Values.mongodb.resources.requests.memory }}
+            cpu: {{ .Values.mongodb.resources.requests.cpu }}
           limits:
-            memory: "256Mi"
+            memory: {{ .Values.mongodb.resources.limits.memory }}
+            cpu: {{ .Values.mongodb.resources.limits.cpu }}
         volumeMounts:
         - name: mongodb-data
           mountPath: /data/db
